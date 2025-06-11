@@ -8,10 +8,8 @@
     <meta name="keywords" content="提示词, AI, 人力资源, HR, 训练营, prompt engineering, 学习网站">
     <link rel="canonical" href="https://promptup.work">
     
-    <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts for better typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
@@ -33,7 +31,6 @@
             cursor: text;
         }
 
-        /* Toast Notification Styles */
         .toast {
             position: fixed;
             top: 20px;
@@ -50,14 +47,13 @@
         .toast.show {
             transform: translateX(0);
         }
-        .toast.success { background-color: #22c55e; } /* green-500 */
-        .toast.error { background-color: #ef4444; } /* red-500 */
-        .toast.loading { background-color: #3b82f6; } /* blue-500 for loading, or choose another */
+        .toast.success { background-color: #22c55e; } 
+        .toast.error { background-color: #ef4444; } 
+        .toast.loading { background-color: #3b82f6; }
 
 
-        /* Drag & Drop Area */
         .drop-zone {
-            border: 2px dashed #d1d5db; /* gray-300 */
+            border: 2px dashed #d1d5db; 
             border-radius: 0.5rem;
             padding: 2rem;
             text-align: center;
@@ -65,8 +61,8 @@
             transition: background-color 0.2s, border-color 0.2s;
         }
         .drop-zone.dragover {
-            background-color: #e0f2fe; /* sky-100 */
-            border-color: #0ea5e9; /* sky-500 */
+            background-color: #e0f2fe; 
+            border-color: #0ea5e9; 
         }
         .drop-zone input[type="file"] {
             display: none;
@@ -133,10 +129,9 @@
         <p>© 2024 PromptUp.work. All Rights Reserved.</p>
     </footer>
 
-    <!-- MODIFIED: Auth Modal with close button -->
+    <!-- Auth Modal -->
     <div id="auth-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all relative">
-            <!-- NEW: Close button -->
             <button id="auth-modal-close-button" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
@@ -161,7 +156,7 @@
                     <div class="space-y-4">
                         <input id="register-name" type="text" placeholder="你的姓名 (如: 张三)" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                         <input id="register-password" type="password" placeholder="设置密码" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                        <input id="register-circle" type="password" placeholder="输入圈子暗号" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                        <input id="register-circle" type="text" placeholder="输入圈子暗号 (如: AIGCHR)" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                     </div>
                     <button type="submit" class="w-full bg-green-500 text-white font-bold py-3 px-4 rounded-lg mt-6 hover:bg-green-600 transition-transform transform hover:scale-105">注册并加入</button>
                     <p class="text-center text-sm text-gray-500 mt-4">
@@ -172,7 +167,6 @@
         </div>
     </div>
     
-    <!-- Congratulations Modal -->
     <div id="congrats-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md text-center p-8 transform transition-all scale-95">
             <div class="text-6xl mb-4">🎉</div>
@@ -182,10 +176,8 @@
         </div>
     </div>
 
-    <!-- Toast Notification Container -->
     <div id="toast-container"></div>
 
-    <!-- Practice Square Detail Modal -->
     <div id="detail-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col transform transition-all scale-95 opacity-0">
             <div class="p-6 border-b flex justify-between items-center">
@@ -196,13 +188,10 @@
         </div>
     </div>
 
-
-    <!-- JavaScript Logic -->
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const WORKER_URL = 'https://promptup-checkin-api.mochensissy.workers.dev'; // Your Worker URL
+        const WORKER_URL = 'https://promptup-checkin-api.mochensissy.workers.dev'; 
 
-        // --- DATA STORE ---
         const initialTaskData = {
             title: "提示词实践训练营",
             goal: "赋能HR，从提示词小白到实战高手，轻松玩转AI，提升职场效能。",
@@ -223,17 +212,12 @@
             ]
         };
         let taskData = JSON.parse(localStorage.getItem('taskData')) || initialTaskData;
-        let users = JSON.parse(localStorage.getItem('users')) || [];
-        
-        // MODIFIED: checkIns will be loaded from server, initialize as empty array
         let checkIns = []; 
-        
         let currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || null;
-        const ADMIN_USER = { name: 'baihuyang', password: '123' }; // Keep admin password simple for now
+        const ADMIN_USER_FRONTEND_FLAG = { name: 'baihuyang' }; 
         let isAdminEditing = false;
-        let currentPageId = 'overview-page'; // Track current page
+        let currentPageId = 'overview-page';
 
-        // --- DOM Elements ---
         const authModal = document.getElementById('auth-modal');
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
@@ -245,7 +229,6 @@
         const detailModal = document.getElementById('detail-modal');
         const checkinFormContainer = document.getElementById('checkin-form-container');
         
-        // --- NEW: Function to load check-ins from server ---
         async function loadCheckInsFromServer() {
             showToast('正在加载打卡记录...', 'loading');
             try {
@@ -253,41 +236,29 @@
                 const response = await fetch(endpoint);
                 if (!response.ok) {
                     console.error('Failed to load check-ins from server:', response.status, await response.text());
-                    showToast('加载打卡记录失败，请稍后重试', 'error');
-                    checkIns = []; // Ensure checkIns is an empty array on failure
+                    showToast('加载打卡记录失败 (服务器错误)', 'error');
+                    checkIns = []; 
+                    document.querySelector('.toast.loading')?.remove();
                     return;
                 }
-                const serverCheckIns = await response.json();
-                // IMPORTANT: The server only returns {id, name, message, timestamp}.
-                // We need to merge this with any local-only data if we were to preserve taskId, type, etc.
-                // For now, we'll re-map them, but they won't have the original taskId, type, circle, anonymous, imageUrl from local submissions
-                // This means 'My Records' and 'Practice Square' might not show all details perfectly if they relied on these fields from local data.
-                checkIns = serverCheckIns.map(serverCi => ({
-                    id: serverCi.id, // from server
-                    userName: serverCi.name, // from server
-                    content: serverCi.message, // from server
-                    timestamp: new Date(serverCi.timestamp).getTime(), // from server
-                    // The following fields are NOT from the server with the current Worker design.
-                    // They will be undefined unless we enhance the Worker to store/return them.
-                    // Or, if we want to keep them on the client-side *after* a submission for immediate display,
-                    // we need to be careful about how checkIns array is managed.
-                    // For now, they will be missing from records loaded from server:
-                    circle: users.find(u => u.name === serverCi.name)?.circle || 'unknown', // Attempt to derive circle
-                    taskId: 0, // Placeholder, server doesn't provide
-                    type: 'basic', // Placeholder
-                    anonymous: false, // Placeholder
-                    imageUrl: null // Server doesn't provide image
-                })).sort((a, b) => b.timestamp - a.timestamp); // Ensure sorted after mapping
-                showToast('打卡记录已更新', 'success');
+                const serverData = await response.json();
+                if (Array.isArray(serverData)) {
+                    checkIns = serverData;
+                    checkIns.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                    showToast('打卡记录已更新', 'success');
+                } else {
+                    console.error('Received non-array data for check-ins:', serverData);
+                    showToast('加载打卡记录格式错误', 'error');
+                    checkIns = [];
+                }
             } catch (error) {
                 console.error('Error loading check-ins:', error);
                 showToast('网络错误，无法加载打卡记录', 'error');
-                checkIns = []; // Ensure checkIns is an empty array on network error
+                checkIns = [];
             }
+            document.querySelector('.toast.loading')?.remove();
         }
 
-        // --- CORE FUNCTIONS ---
-        // MODIFIED: init is now async to await check-in loading
         async function init() {
             if (currentUser) {
                 setupUserUI();
@@ -295,45 +266,44 @@
                 setupGuestUI();
             }
             addEventListeners();
-            
-            await loadCheckInsFromServer(); // Load data first
-            showPage(currentPageId || 'overview-page'); // Then show the page
+            await loadCheckInsFromServer();
+            showPage(currentPageId || 'overview-page');
         }
 
         function setupUserUI() {
             const avatarChar = currentUser.name.slice(0, 1).toUpperCase();
             userInfoDiv.innerHTML = `<div class="flex items-center space-x-3"><div class="w-10 h-10 bg-gray-200 text-gray-600 flex items-center justify-center rounded-full text-lg font-bold">${avatarChar}</div><span class="font-semibold text-gray-700 hidden sm:inline">${currentUser.name}</span></div><button id="logout-button" class="text-sm text-gray-500 hover:text-blue-500 transition-colors">退出</button>`;
             document.getElementById('logout-button').addEventListener('click', handleLogout);
-            if (currentUser.name === ADMIN_USER.name) {
+            if (currentUser.name === ADMIN_USER_FRONTEND_FLAG.name) {
                 adminEditButton.classList.remove('hidden');
             } else {
                 adminEditButton.classList.add('hidden');
             }
         }
 
-        function setupGuestUI() {
+        function setupGuestUI() { 
             userInfoDiv.innerHTML = `<button id="show-auth-button" class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600 transition-colors">登录 / 注册</button>`;
             document.getElementById('show-auth-button').addEventListener('click', () => {
                 authModal.classList.remove('hidden');
+                loginForm.reset(); registerForm.reset(); 
+                document.getElementById('login-error').classList.add('hidden');
+                document.getElementById('register-error').classList.add('hidden');
             });
             adminEditButton.classList.add('hidden');
         }
         
-        // MODIFIED: showPage to potentially reload data for relevant pages
         async function showPage(pageId) {
             currentPageId = pageId;
             const protectedPages = ['checkin-page', 'my-records-page', 'practice-square-page'];
             if (protectedPages.includes(pageId) && !currentUser) {
                 authModal.classList.remove('hidden');
                 showToast('请先登录或注册以访问此页面', 'error');
-                // Dispatch a custom event to navigate back to overview if auth is required but user not logged in
                 document.dispatchEvent(new CustomEvent('navigateToPage', { detail: 'overview-page' }));
                 return;
             }
 
-            // If navigating to a page that displays check-ins, ensure data is fresh
             if (['my-records-page', 'practice-square-page'].includes(pageId)) {
-                await loadCheckInsFromServer();
+                 await loadCheckInsFromServer(); 
             }
 
             allPages.forEach(page => page.classList.add('hidden'));
@@ -341,9 +311,8 @@
             if (targetPage) {
                  targetPage.classList.remove('hidden');
             } else {
-                console.warn(`Page with ID ${pageId} not found. Defaulting to overview.`);
                 document.getElementById('overview-page').classList.remove('hidden');
-                pageId = 'overview-page'; // Update actual pageId
+                pageId = 'overview-page'; 
                 currentPageId = 'overview-page';
             }
             
@@ -356,20 +325,18 @@
 
             switch (pageId) {
                 case 'overview-page': renderTaskOverview(); break;
-                case 'checkin-page': renderCheckInForm(); break; // Needs checkIns for context
+                case 'checkin-page': renderCheckInForm(); break; 
                 case 'my-records-page': renderMyRecords(); break;
                 case 'practice-square-page': renderPracticeSquare(); break;
             }
         }
         
-        // --- RENDER FUNCTIONS ---
-        // renderTaskOverview: No changes needed unless it depends on dynamic checkIn counts for tasks
-        function renderTaskOverview() { const contentDiv = document.getElementById('overview-content'); contentDiv.innerHTML = `<div class="text-center mb-8"><p class="text-lg font-semibold text-blue-600" ${isAdminEditing ? 'contenteditable="true" data-key="title"' : ''}>${taskData.title}</p><p class="mt-2 text-gray-600 max-w-2xl mx-auto" ${isAdminEditing ? 'contenteditable="true" data-key="goal"' : ''}>${taskData.goal}</p><p class="mt-2 text-sm text-gray-500" ${isAdminEditing ? 'contenteditable="true" data-key="period"' : ''}>${taskData.period}</p></div>${taskData.weeks.map((week, weekIndex) => `<div class="pt-6"><h3 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4" ${isAdminEditing ? `contenteditable="true" data-key="week_title" data-week-index="${weekIndex}"` : ''}>${week.title}</h3><div class="space-y-6">${week.tasks.map((task, taskIndex) => `<div class="flex flex-col md:flex-row gap-4 p-4 rounded-lg bg-gray-50 border border-gray-200"><div class="flex-shrink-0 w-20 h-20 bg-blue-100 text-blue-600 rounded-lg flex flex-col items-center justify-center"><span class="text-sm">任务</span><span class="text-3xl font-bold">${task.id}</span></div><div class="flex-grow"><h4 class="font-bold text-gray-900" ${isAdminEditing ? `contenteditable="true" data-key="title" data-week-index="${weekIndex}" data-task-index="${taskIndex}"` : ''}>${task.title} <span class="text-sm font-normal text-gray-500">(${task.duration})</span></h4><div class="mt-2"><p class="text-sm text-gray-700"><strong class="font-semibold">打卡要求:</strong> <span ${isAdminEditing ? `contenteditable="true" data-key="checkIn" data-week-index="${weekIndex}" data-task-index="${taskIndex}"` : ''}>${task.checkIn}</span></p><p class="text-sm text-gray-500 mt-1"><strong class="font-semibold">进阶任务:</strong> <span ${isAdminEditing ? `contenteditable="true" data-key="advanced" data-week-index="${weekIndex}" data-task-index="${taskIndex}"` : ''}>${task.advanced}</span></p></div></div></div>`).join('')}</div></div>`).join('')}${isAdminEditing ? '<div class="mt-6 text-center"><button id="save-admin-edits" class="bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600">保存修改并退出</button></div>' : ''}`; if (isAdminEditing) { document.getElementById('save-admin-edits').addEventListener('click', saveAdminEdits); } }
+        function renderTaskOverview() {  const contentDiv = document.getElementById('overview-content'); contentDiv.innerHTML = `<div class="text-center mb-8"><p class="text-lg font-semibold text-blue-600" ${isAdminEditing ? 'contenteditable="true" data-key="title"' : ''}>${taskData.title}</p><p class="mt-2 text-gray-600 max-w-2xl mx-auto" ${isAdminEditing ? 'contenteditable="true" data-key="goal"' : ''}>${taskData.goal}</p><p class="mt-2 text-sm text-gray-500" ${isAdminEditing ? 'contenteditable="true" data-key="period"' : ''}>${taskData.period}</p></div>${taskData.weeks.map((week, weekIndex) => `<div class="pt-6"><h3 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4" ${isAdminEditing ? `contenteditable="true" data-key="week_title" data-week-index="${weekIndex}"` : ''}>${week.title}</h3><div class="space-y-6">${week.tasks.map((task, taskIndex) => `<div class="flex flex-col md:flex-row gap-4 p-4 rounded-lg bg-gray-50 border border-gray-200"><div class="flex-shrink-0 w-20 h-20 bg-blue-100 text-blue-600 rounded-lg flex flex-col items-center justify-center"><span class="text-sm">任务</span><span class="text-3xl font-bold">${task.id}</span></div><div class="flex-grow"><h4 class="font-bold text-gray-900" ${isAdminEditing ? `contenteditable="true" data-key="title" data-week-index="${weekIndex}" data-task-index="${taskIndex}"` : ''}>${task.title} <span class="text-sm font-normal text-gray-500">(${task.duration})</span></h4><div class="mt-2"><p class="text-sm text-gray-700"><strong class="font-semibold">打卡要求:</strong> <span ${isAdminEditing ? `contenteditable="true" data-key="checkIn" data-week-index="${weekIndex}" data-task-index="${taskIndex}"` : ''}>${task.checkIn}</span></p><p class="text-sm text-gray-500 mt-1"><strong class="font-semibold">进阶任务:</strong> <span ${isAdminEditing ? `contenteditable="true" data-key="advanced" data-week-index="${weekIndex}" data-task-index="${taskIndex}"` : ''}>${task.advanced}</span></p></div></div></div>`).join('')}</div></div>`).join('')}${isAdminEditing ? '<div class="mt-6 text-center"><button id="save-admin-edits" class="bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600">保存修改并退出</button></div>' : ''}`; if (isAdminEditing) { document.getElementById('save-admin-edits').addEventListener('click', saveAdminEdits); } }
         
-        function renderCheckInForm() {
-            if (!currentUser) return; // Should be handled by showPage, but good to double check
-            const myCheckIns = checkIns.filter(ci => ci.userName === currentUser.name);
-            const lastCompletedBasicTaskId = myCheckIns.filter(ci => ci.type === 'basic').reduce((max, ci) => Math.max(max, ci.taskId || 0), 0); // Added || 0 for safety
+        function renderCheckInForm() { 
+            if (!currentUser) return; 
+            const myCheckIns = checkIns.filter(ci => ci.userName === currentUser.name && ci.type);
+            const lastCompletedBasicTaskId = myCheckIns.filter(ci => ci.type === 'basic').reduce((max, ci) => Math.max(max, ci.taskId || 0), 0);
             let formHTML = '';
             taskData.weeks.forEach(week => {
                 week.tasks.forEach(task => {
@@ -384,17 +351,16 @@
             checkinFormContainer.querySelectorAll('.checkin-form').forEach(form => form.addEventListener('submit', handleCheckInSubmit));
             checkinFormContainer.querySelectorAll('.drop-zone').forEach(initDropZone);
         }
-        function createCheckinForm(taskId, taskType) { const isBasic = taskType === 'basic'; const buttonColor = isBasic ? 'bg-blue-500 hover:bg-blue-600' : 'bg-purple-500 hover:bg-purple-600'; return `<form class="checkin-form mt-4" data-task-id="${taskId}" data-task-type="${taskType}"><textarea name="content" class="w-full p-2 border rounded-md" rows="3" placeholder="记录你的心得体会..." required></textarea><div class="mt-2"><div class="drop-zone"><input type="file" name="screenshot" accept="image/*" ${isBasic ? 'required' : ''}><p class="file-name-display text-gray-500">拖拽图片到此处，或 <span class="text-blue-500 font-semibold">点击上传</span></p></div></div><div class="mt-4 flex items-center justify-between"><div class="flex items-center space-x-4"><label class="flex items-center"><input type="radio" name="display" value="real" class="mr-1" checked> 实名显示</label><label class="flex items-center"><input type="radio" name="display" value="anonymous" class="mr-1"> 匿名显示</label></div><button type="submit" class="${buttonColor} text-white px-5 py-2 rounded-lg font-semibold">提交打卡</button></div></form>`; }
+        function createCheckinForm(taskId, taskType) {  const isBasic = taskType === 'basic'; const buttonColor = isBasic ? 'bg-blue-500 hover:bg-blue-600' : 'bg-purple-500 hover:bg-purple-600'; return `<form class="checkin-form mt-4" data-task-id="${taskId}" data-task-type="${taskType}"><textarea name="content" class="w-full p-2 border rounded-md" rows="3" placeholder="记录你的心得体会..." required></textarea><div class="mt-2"><div class="drop-zone"><input type="file" name="screenshot" accept="image/*,.heic,.heif" ${isBasic ? 'required' : ''}><p class="file-name-display text-gray-500">拖拽图片到此处，或 <span class="text-blue-500 font-semibold">点击上传</span> (支持jpg,png,gif,heic)</p></div></div><div class="mt-4 flex items-center justify-between"><div class="flex items-center space-x-4"><label class="flex items-center"><input type="radio" name="display" value="real" class="mr-1" checked> 实名显示</label><label class="flex items-center"><input type="radio" name="display" value="anonymous" class="mr-1"> 匿名显示</label></div><button type="submit" class="${buttonColor} text-white px-5 py-2 rounded-lg font-semibold">提交打卡</button></div></form>`; }
         
         function renderMyRecords() { 
             if (!currentUser) return; 
             const listDiv = document.getElementById('my-records-list'); 
-            const myCheckIns = checkIns.filter(ci => ci.userName === currentUser.name)
-                                     .sort((a, b) => b.timestamp - a.timestamp); // Already sorted by timestamp from server logic
+            const myCheckIns = checkIns.filter(ci => ci.userName === currentUser.name);
             if (myCheckIns.length === 0) { listDiv.innerHTML = `<div class="text-center py-12 bg-white rounded-lg shadow-sm"><p class="text-gray-500">你还没有任何打卡记录，快去“立即打卡”页面开始吧！</p></div>`; return; } 
             listDiv.innerHTML = myCheckIns.map(ci => { 
-                const task = findTaskById(ci.taskId || 0); // Use taskId if available, else default
-                const taskTypeName = (ci.type === 'basic' || !ci.type) ? '基础任务' : '进阶任务'; // Default to basic if type undefined
+                const task = findTaskById(ci.taskId || 0); 
+                const taskTypeName = (ci.type === 'basic' || !ci.type) ? '基础任务' : '进阶任务'; 
                 const taskTypeColor = (ci.type === 'basic' || !ci.type) ? 'text-blue-600 bg-blue-100' : 'text-purple-600 bg-purple-100'; 
                 return `<div class="bg-white p-6 rounded-xl shadow-sm border flex flex-col md:flex-row gap-6">
                             <div class="flex-shrink-0">
@@ -405,19 +371,17 @@
                                 </div>
                             </div>
                             <div class="flex-grow border-t md:border-t-0 md:border-l border-gray-200 pt-4 md:pt-0 md:pl-6">
-                                <p class="text-gray-700 whitespace-pre-wrap">${ci.content}</p>
+                                <p class="text-gray-700 whitespace-pre-wrap">${ci.message || ci.content}</p>
                                 ${ci.imageUrl ? `<a href="${ci.imageUrl}" target="_blank" class="mt-4 inline-block"><img src="${ci.imageUrl}" alt="打卡截图" class="max-w-xs max-h-48 rounded-lg border shadow-sm"></a>` : ''}
                             </div>
                         </div>` 
             }).join(''); 
         }
 
-        function renderPracticeSquare() { 
+        function renderPracticeSquare() {  
             if (!currentUser) return; 
             const listContainer = document.getElementById('practice-square-grid'); 
-            // Filter by circle - assuming ci.circle is populated correctly from users data or server if available
-            const circlePosts = checkIns.filter(ci => ci.circle === currentUser.circle || currentUser.circle === 'admin')
-                                        .sort((a,b) => b.timestamp - a.timestamp); // Already sorted
+            const circlePosts = checkIns.filter(ci => ci.circle === currentUser.circle || currentUser.name === ADMIN_USER_FRONTEND_FLAG.name); 
             if (circlePosts.length === 0) { listContainer.innerHTML = `<div class="col-span-1 md:col-span-2 lg:col-span-3 text-center py-12 bg-white rounded-lg shadow-sm"><p class="text-gray-500">实践广场还没有内容，成为第一个分享的人吧！</p></div>`; return; } 
             listContainer.innerHTML = circlePosts.map(ci => { 
                 const displayName = (ci.anonymous && ci.userName !== currentUser.name) ? `${ci.userName.slice(0, 1)}**` : ci.userName; 
@@ -425,7 +389,7 @@
                 const task = findTaskById(ci.taskId || 0); 
                 const taskTypeBadge = (ci.type === 'advanced') ? `<span class="absolute top-3 left-3 text-xs font-semibold px-2 py-1 rounded-full bg-purple-100 text-purple-600">进阶</span>` : ''; 
                 return `<div class="bg-white rounded-xl shadow-sm border flex flex-col p-5 group relative cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all" data-post-id="${ci.id}">
-                            ${currentUser.name === ADMIN_USER.name ? `<button class="admin-delete-post absolute top-2 right-2 w-8 h-8 bg-red-100 text-red-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xl z-10" data-post-id="${ci.id}">×</button>` : ''}
+                            ${currentUser.name === ADMIN_USER_FRONTEND_FLAG.name ? `<button class="admin-delete-post absolute top-2 right-2 w-8 h-8 bg-red-100 text-red-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xl z-10" data-post-id="${ci.id}">×</button>` : ''}
                             ${taskTypeBadge}
                             <div class="flex items-center mb-3">
                                 <div class="w-10 h-10 bg-indigo-100 text-indigo-600 flex items-center justify-center rounded-full text-lg font-bold mr-3">${avatarChar}</div>
@@ -433,27 +397,104 @@
                             </div>
                             <div class="flex-grow">
                                 <h4 class="font-bold text-gray-900 mb-2">打卡任务 ${(ci.taskId || '未知')}: ${task.title}</h4>
-                                <p class="text-gray-600 text-sm mb-4 line-clamp-3">${ci.content}</p>
+                                <p class="text-gray-600 text-sm mb-4 line-clamp-3">${ci.message || ci.content}</p> 
                                 ${ci.imageUrl ? `<div class="w-full h-40 bg-gray-100 rounded-lg overflow-hidden"><img src="${ci.imageUrl}" alt="打卡截图" class="w-full h-full object-cover"></div>` : ''}
                             </div>
                         </div>` 
             }).join(''); 
         }
         
-        // --- HANDLER FUNCTIONS ---
-        // Login and Register handlers remain largely the same, using localStorage for users
-        function handleLogin(e) { e.preventDefault(); const name = document.getElementById('login-name').value.trim(); const password = document.getElementById('login-password').value.trim(); const errorDiv = document.getElementById('login-error'); let user = users.find(u => u.name === name && u.password === password); if (name === ADMIN_USER.name && password === ADMIN_USER.password) { user = { ...ADMIN_USER, circle: 'admin' }; } if (user) { currentUser = { name: user.name, circle: user.circle }; sessionStorage.setItem('currentUser', JSON.stringify(currentUser)); authModal.classList.add('hidden'); init(); } else { errorDiv.textContent = '姓名或密码错误。'; errorDiv.classList.remove('hidden'); } }
-        function handleRegister(e) { e.preventDefault(); const name = document.getElementById('register-name').value.trim(); const password = document.getElementById('register-password').value.trim(); const circle = document.getElementById('register-circle').value.trim(); const errorDiv = document.getElementById('register-error'); if (!name || !password || !circle) { errorDiv.textContent = '所有字段均为必填项。'; errorDiv.classList.remove('hidden'); return; } if (users.some(u => u.name === name)) { errorDiv.textContent = '该姓名已被注册，请更换。'; errorDiv.classList.remove('hidden'); return; } const newUser = { name, password, circle }; users.push(newUser); localStorage.setItem('users', JSON.stringify(users)); currentUser = { name: newUser.name, circle: newUser.circle }; sessionStorage.setItem('currentUser', JSON.stringify(currentUser)); authModal.classList.add('hidden'); init(); }
-        function handleLogout() { currentUser = null; sessionStorage.removeItem('currentUser'); isAdminEditing = false; init(); /* showPage('overview-page') is called in init */; }
+        async function handleLogin(e) {
+            e.preventDefault();
+            const name = document.getElementById('login-name').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            const errorDiv = document.getElementById('login-error');
+            errorDiv.classList.add('hidden'); 
+
+            if (!name || !password) {
+                errorDiv.textContent = '姓名和密码不能为空。';
+                errorDiv.classList.remove('hidden'); return;
+            }
+            showToast('正在登录...', 'loading');
+            try {
+                const endpoint = WORKER_URL.endsWith('/') ? `${WORKER_URL}login` : `${WORKER_URL}/login`;
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, password }),
+                });
+                const result = await response.json();
+                document.querySelector('.toast.loading')?.remove();
+
+                if (result.success && result.user) {
+                    currentUser = result.user; 
+                    sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    authModal.classList.add('hidden');
+                    loginForm.reset();
+                    await init(); 
+                } else {
+                    errorDiv.textContent = result.error || '登录失败，请检查您的凭据。';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                document.querySelector('.toast.loading')?.remove();
+                console.error('Login error:', error);
+                errorDiv.textContent = '网络错误，登录失败。';
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('register-name').value.trim();
+            const password = document.getElementById('register-password').value.trim();
+            const circle = document.getElementById('register-circle').value.trim();
+            const errorDiv = document.getElementById('register-error');
+            errorDiv.classList.add('hidden');
+
+            if (!name || !password || !circle) {
+                errorDiv.textContent = '所有字段均为必填项。';
+                errorDiv.classList.remove('hidden'); return;
+            }
+            showToast('正在注册...', 'loading');
+            try {
+                const endpoint = WORKER_URL.endsWith('/') ? `${WORKER_URL}register` : `${WORKER_URL}/register`;
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, password, circle }),
+                });
+                const result = await response.json();
+                document.querySelector('.toast.loading')?.remove();
+
+                if (result.success && result.user) {
+                    currentUser = result.user; 
+                    sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    authModal.classList.add('hidden');
+                    registerForm.reset();
+                    await init(); 
+                } else {
+                    errorDiv.textContent = result.error || '注册失败，请稍后再试。';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                document.querySelector('.toast.loading')?.remove();
+                console.error('Register error:', error);
+                errorDiv.textContent = '网络错误，注册失败。';
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        function handleLogout() { 
+            currentUser = null; 
+            sessionStorage.removeItem('currentUser'); 
+            isAdminEditing = false; 
+            init(); 
+        }
         
-        // MODIFIED: handleCheckInSubmit to send data to Worker
         async function handleCheckInSubmit(e) {
             e.preventDefault();
-            if (!currentUser) {
-                showToast('请先登录再打卡', 'error');
-                authModal.classList.remove('hidden');
-                return;
-            }
+            if (!currentUser) { showToast('请先登录', 'error'); authModal.classList.remove('hidden'); return; }
 
             const form = e.target;
             const taskId = parseInt(form.dataset.taskId);
@@ -462,14 +503,8 @@
             const screenshotInput = form.querySelector('input[name="screenshot"]');
             const displayType = form.querySelector('input[name="display"]:checked').value;
 
-            if (!content) {
-                showToast('打卡内容不能为空！', 'error');
-                return;
-            }
-            if (taskType === 'basic' && screenshotInput.files.length === 0) {
-                showToast('基础任务必须上传截图！', 'error');
-                return;
-            }
+            if (!content) {showToast('打卡内容不能为空', 'error'); return;}
+            if (taskType === 'basic' && screenshotInput.files.length === 0) { showToast('基础任务需上传截图', 'error'); return; }
             
             showToast('正在提交打卡...', 'loading');
 
@@ -477,11 +512,11 @@
                 const checkInDataForServer = {
                     name: currentUser.name,
                     message: content,
-                    // Optionally, you could send other metadata if your Worker handles it:
-                    // taskId: taskId,
-                    // taskType: taskType,
-                    // anonymous: displayType === 'anonymous',
-                    // circle: currentUser.circle
+                    circle: currentUser.circle, 
+                    taskId: taskId,
+                    type: taskType,
+                    anonymous: displayType === 'anonymous',
+                    imageUrl: imageBase64 
                 };
 
                 try {
@@ -491,38 +526,22 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(checkInDataForServer),
                     });
-
                     const result = await response.json();
+                     document.querySelector('.toast.loading')?.remove();
 
                     if (response.ok && result.success && result.data) {
-                        // Create a full local record for immediate display, including local-only data
-                        const newLocalCheckIn = {
-                            id: result.data.id, // Use ID from server
-                            userName: currentUser.name,
-                            circle: currentUser.circle,
-                            taskId: taskId,
-                            type: taskType,
-                            content: content,
-                            imageUrl: imageBase64, // Store base64 locally for immediate display
-                            anonymous: displayType === 'anonymous',
-                            timestamp: new Date(result.data.timestamp).getTime() // Use timestamp from server
-                        };
-                        
-                        checkIns.unshift(newLocalCheckIn); // Add to local array for immediate UI update
-                        checkIns.sort((a,b) => b.timestamp - a.timestamp); // Re-sort
-
+                        checkIns.unshift(result.data); 
+                        checkIns.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
                         showToast('打卡成功！', 'success');
                         if (taskType === 'basic') checkForCompletion();
-                        
-                        // Re-render relevant parts or navigate
-                        renderCheckInForm(); // Refresh the form states
-                        if (currentPageId === 'my-records-page') renderMyRecords();
-                        if (currentPageId === 'practice-square-page') renderPracticeSquare();
-
+                        renderCheckInForm(); 
+                        if (currentPageId === 'my-records-page') await showPage('my-records-page'); 
+                        if (currentPageId === 'practice-square-page') await showPage('practice-square-page'); 
                     } else {
-                        showToast(`打卡失败: ${result.error || '未知服务器错误'}`, 'error');
+                        showToast(`打卡失败: ${result.error || '未知错误'}`, 'error');
                     }
                 } catch (error) {
+                     document.querySelector('.toast.loading')?.remove();
                     console.error('Error submitting checkIn:', error);
                     showToast('网络错误，打卡失败', 'error');
                 }
@@ -530,79 +549,66 @@
 
             if (screenshotInput.files.length > 0) {
                 const file = screenshotInput.files[0];
-                if (file.size > 5 * 1024 * 1024) { // Limit image size to 5MB for base64
-                    showToast('图片文件过大，请选择小于5MB的图片。', 'error');
-                    const loadingToast = document.querySelector('.toast.loading');
-                    if(loadingToast) loadingToast.remove();
-                    return;
+                if (file.size > 2 * 1024 * 1024) { // 2MB limit
+                    showToast('图片文件过大(最大2MB)。', 'error');
+                    document.querySelector('.toast.loading')?.remove(); return;
                 }
                 const reader = new FileReader();
-                reader.onloadend = () => processSubmit(reader.result); // reader.result is base64
+                reader.onloadend = () => processSubmit(reader.result);
                 reader.readAsDataURL(file);
             } else {
-                processSubmit(null); // No image
+                processSubmit(null);
             }
         }
 
         function toggleAdminEdit() { isAdminEditing = !isAdminEditing; if (isAdminEditing) { adminEditButton.textContent = '取消编辑'; adminEditButton.classList.replace('bg-yellow-500', 'bg-gray-500'); adminEditButton.classList.replace('hover:bg-yellow-600', 'hover:bg-gray-600'); } else { adminEditButton.textContent = '切换编辑模式'; adminEditButton.classList.replace('bg-gray-500', 'bg-yellow-500'); adminEditButton.classList.replace('hover:bg-gray-600', 'hover:bg-yellow-600'); } renderTaskOverview(); }
-        function saveAdminEdits() { const contentDiv = document.getElementById('overview-content'); contentDiv.querySelectorAll('[contenteditable="true"]').forEach(el => { const key = el.dataset.key; const weekIndex = el.dataset.weekIndex; const taskIndex = el.dataset.taskIndex; const newText = el.innerText; if (weekIndex && taskIndex) { taskData.weeks[weekIndex].tasks[taskIndex][key] = newText; } else if (weekIndex) { taskData.weeks[weekIndex].title = newText; } else { taskData[key] = newText; } }); localStorage.setItem('taskData', JSON.stringify(taskData)); showToast('任务概览已保存！', 'success'); isAdminEditing = false; toggleAdminEdit(); }
+        function saveAdminEdits() {  const contentDiv = document.getElementById('overview-content'); contentDiv.querySelectorAll('[contenteditable="true"]').forEach(el => { const key = el.dataset.key; const weekIndex = el.dataset.weekIndex; const taskIndex = el.dataset.taskIndex; const newText = el.innerText; if (weekIndex && taskIndex) { taskData.weeks[weekIndex].tasks[taskIndex][key] = newText; } else if (weekIndex) { taskData.weeks[weekIndex].title = newText; } else { taskData[key] = newText; } }); localStorage.setItem('taskData', JSON.stringify(taskData)); showToast('任务概览已保存！', 'success'); isAdminEditing = false; toggleAdminEdit(); }
         
-        function handlePracticeCardClick(e) {
+        async function handlePracticeCardClick(e) {
             const card = e.target.closest('[data-post-id]');
             if (!card) return;
 
             if (e.target.closest('.admin-delete-post')) {
                 e.stopPropagation();
                 const postId = e.target.closest('.admin-delete-post').dataset.postId;
-                if (confirm('确定要删除这条打卡记录吗？此操作不可撤销，且会从服务器删除。')) {
-                    // TODO: Implement actual server-side delete if needed.
-                    // For now, it will only remove from local view and simulate success.
-                    // This requires a new Worker endpoint: DELETE /checkin/:id
-                    
-                    // Optimistic UI update (remove locally first)
-                    checkIns = checkIns.filter(ci => ci.id !== postId);
-                    renderPracticeSquare();
-                    showToast('记录已（在本地）移除。后端删除待实现。', 'success');
-                    
-                    // Example of how server-side delete *could* be called:
-                    /*
-                    const deleteEndpoint = WORKER_URL.endsWith('/') ? `${WORKER_URL}checkin/${postId}` : `${WORKER_URL}/checkin/${postId}`;
-                    fetch(deleteEndpoint, { method: 'DELETE' })
-                        .then(response => {
-                            if (response.ok) {
-                                showToast('记录已从服务器删除', 'success');
-                            } else {
-                                throw new Error('Server delete failed');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Delete error:', error);
-                            showToast('从服务器删除失败，请刷新或重试', 'error');
-                            // Potentially re-fetch checkIns to revert optimistic update if server delete fails
-                            loadCheckInsFromServer().then(renderPracticeSquare);
-                        });
-                    */
+                if (confirm('确定要永久删除这条打卡记录吗？')) {
+                    showToast('正在删除...', 'loading');
+                    try {
+                        const deleteEndpoint = WORKER_URL.endsWith('/') ? `${WORKER_URL}checkin/${postId}` : `${WORKER_URL}/checkin/${postId}`;
+                        const response = await fetch(deleteEndpoint, { method: 'DELETE' });
+                        const result = await response.json();
+                        document.querySelector('.toast.loading')?.remove();
+                        if (response.ok && result.success) {
+                            checkIns = checkIns.filter(ci => ci.id !== postId);
+                            renderPracticeSquare();
+                            showToast('记录已删除', 'success');
+                        } else {
+                            showToast(`删除失败: ${result.error || '服务器错误'}`, 'error');
+                        }
+                    } catch (error) {
+                        document.querySelector('.toast.loading')?.remove();
+                        console.error('Delete error:', error);
+                        showToast('网络错误，删除失败', 'error');
+                    }
                 }
                 return;
             }
             const postId = card.dataset.postId;
             const post = checkIns.find(ci => ci.id === postId);
             if (!post) return;
-            const task = findTaskById(post.taskId || 0); // Handle potential undefined taskId
-            const displayName = (post.anonymous && post.userName !== currentUser.name) ? `${post.userName.slice(0, 1)}**` : post.userName;
+            const task = findTaskById(post.taskId || 0); 
+            const displayName = (post.anonymous && currentUser && post.userName !== currentUser.name ) ? `${post.userName.slice(0, 1)}**` : post.userName;
             document.getElementById('detail-modal-title').innerText = `任务 ${(post.taskId || '未知')}: ${task.title}`;
-            document.getElementById('detail-modal-content').innerHTML = `<div class="flex items-center mb-4"><div class="w-12 h-12 bg-indigo-100 text-indigo-600 flex items-center justify-center rounded-full text-xl font-bold mr-4">${post.userName.slice(0,1).toUpperCase()}</div><div><p class="font-bold text-lg">${displayName}</p><p class="text-sm text-gray-500">${new Date(post.timestamp).toLocaleString()}</p></div></div><h4 class="font-semibold text-gray-800 mt-6 mb-2">心得体会:</h4><p class="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">${post.content}</p>${post.imageUrl ? `<h4 class="font-semibold text-gray-800 mt-6 mb-2">提交的截图:</h4><a href="${post.imageUrl}" target="_blank"><img src="${post.imageUrl}" class="w-full rounded-lg border shadow-sm cursor-pointer"/></a>` : ''}`;
+            document.getElementById('detail-modal-content').innerHTML = `<div class="flex items-center mb-4"><div class="w-12 h-12 bg-indigo-100 text-indigo-600 flex items-center justify-center rounded-full text-xl font-bold mr-4">${post.userName.slice(0,1).toUpperCase()}</div><div><p class="font-bold text-lg">${displayName}</p><p class="text-sm text-gray-500">${new Date(post.timestamp).toLocaleString()}</p></div></div><h4 class="font-semibold text-gray-800 mt-6 mb-2">心得体会:</h4><p class="text-gray-700 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">${post.message || post.content}</p>${post.imageUrl ? `<h4 class="font-semibold text-gray-800 mt-6 mb-2">提交的截图:</h4><a href="${post.imageUrl}" target="_blank"><img src="${post.imageUrl}" class="w-full rounded-lg border shadow-sm cursor-pointer"/></a>` : ''}`;
             detailModal.classList.remove('hidden');
             setTimeout(() => { detailModal.querySelector('.transform').classList.remove('scale-95', 'opacity-0'); detailModal.querySelector('.transform').classList.add('scale-100', 'opacity-100'); }, 10);
         }
 
-        // --- UTILITY FUNCTIONS ---
         function findTaskById(id) { for (const week of taskData.weeks) { const found = week.tasks.find(task => task.id === id); if (found) return found; } return { title: '未知任务' }; }
-        function checkForCompletion() { const myBasicCheckIns = checkIns.filter(ci => ci.userName === currentUser.name && ci.type === 'basic'); const totalTasks = taskData.weeks.reduce((acc, week) => acc + week.tasks.length, 0); if (myBasicCheckIns.length >= totalTasks) { const congratsModal = document.getElementById('congrats-modal'); congratsModal.classList.remove('hidden'); setTimeout(() => { congratsModal.querySelector('.transform').classList.remove('scale-95'); congratsModal.querySelector('.transform').classList.add('scale-100'); }, 10); } }
-        function showToast(message, type = 'success') { const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${type}`; toast.textContent = message; container.appendChild(toast); setTimeout(() => toast.classList.add('show'), 10); setTimeout(() => { toast.classList.remove('show'); toast.addEventListener('transitionend', () => toast.remove()); }, type === 'loading' ? 10000 : 3000); } // Longer display for loading
-        function initDropZone(dropZone) { const input = dropZone.querySelector('input[type="file"]'); const textDisplay = dropZone.querySelector('.file-name-display'); const updateText = (file) => { if (file) { textDisplay.textContent = file.name; textDisplay.classList.add('font-semibold', 'text-green-600'); } else { textDisplay.innerHTML = `拖拽图片到此处，或 <span class="text-blue-500 font-semibold">点击上传</span>`; textDisplay.classList.remove('font-semibold', 'text-green-600'); } }; dropZone.addEventListener('click', () => input.click()); input.addEventListener('change', () => updateText(input.files[0])); dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); }); ['dragleave', 'dragend'].forEach(type => { dropZone.addEventListener(type, () => dropZone.classList.remove('dragover')); }); dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); if (e.dataTransfer.files.length) { input.files = e.dataTransfer.files; updateText(input.files[0]); } }); }
+        function checkForCompletion() {  if(!currentUser) return; const myBasicCheckIns = checkIns.filter(ci => ci.userName === currentUser.name && ci.type === 'basic'); const totalTasks = taskData.weeks.reduce((acc, week) => acc + week.tasks.length, 0); if (myBasicCheckIns.length >= totalTasks) { const congratsModal = document.getElementById('congrats-modal'); congratsModal.classList.remove('hidden'); setTimeout(() => { congratsModal.querySelector('.transform').classList.remove('scale-95'); congratsModal.querySelector('.transform').classList.add('scale-100'); }, 10); } }
+        function showToast(message, type = 'success') { const container = document.getElementById('toast-container'); const existingToast = container.querySelector(`.toast.${type}`); if (existingToast && existingToast.textContent === message) return;  const toast = document.createElement('div'); toast.className = `toast ${type}`; toast.textContent = message; container.appendChild(toast); setTimeout(() => toast.classList.add('show'), 10); setTimeout(() => { toast.classList.remove('show'); toast.addEventListener('transitionend', () => toast.remove()); }, type === 'loading' ? 10000 : 3500); } 
+        function initDropZone(dropZone) {  const input = dropZone.querySelector('input[type="file"]'); const textDisplay = dropZone.querySelector('.file-name-display'); const updateText = (file) => { if (file) { textDisplay.textContent = file.name; textDisplay.classList.add('font-semibold', 'text-green-600'); } else { textDisplay.innerHTML = `拖拽图片到此处，或 <span class="text-blue-500 font-semibold">点击上传</span> (支持jpg,png,gif,heic)`; textDisplay.classList.remove('font-semibold', 'text-green-600'); } }; dropZone.addEventListener('click', () => input.click()); input.addEventListener('change', () => { if(input.files.length > 0) updateText(input.files[0]); else updateText(null); }); dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); }); ['dragleave', 'dragend'].forEach(type => { dropZone.addEventListener(type, () => dropZone.classList.remove('dragover')); }); dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); if (e.dataTransfer.files.length) { input.files = e.dataTransfer.files; updateText(input.files[0]); } }); }
         
-        // --- EVENT LISTENERS ---
         function addEventListeners() {
             loginForm.addEventListener('submit', handleLogin);
             registerForm.addEventListener('submit', handleRegister);
@@ -611,10 +617,8 @@
             
             navLinks.forEach(link => link.addEventListener('click', (e) => { 
                 e.preventDefault(); 
-                // Using a custom event for navigation to ensure showPage (async) is handled correctly
                 document.dispatchEvent(new CustomEvent('navigateToPage', { detail: link.dataset.page }));
             }));
-            // Listener for the custom navigation event
             document.addEventListener('navigateToPage', (e) => {
                 showPage(e.detail);
             });
@@ -646,7 +650,6 @@
             });
         }
 
-        // --- KICKSTART THE APP ---
         init();
     });
     </script>
